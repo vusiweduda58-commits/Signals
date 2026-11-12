@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#00c853">
+  <meta name="description" content="Private family trading signal instructions">
+
+  <title>My Private Signals</title>
+
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #030a09;
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* LOCK SCREEN */
+
+    #lockScreen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(
+        circle at 50% 30%,
+        #165b59 0%,
+        #030a09 85%
+      );
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
+      text-align: center;
+    }
+
+    .lock-box {
+      background: rgba(5, 15, 14, 0.92);
+      border: 1px solid #26a69a;
+      border-radius: 16px;
+      padding: 30px 20px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .lock-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .lock-box h2 {
+      color: #e0f2f1;
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .lock-box p {
+      color: #80cbc4;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .pin-input {
+      width: 100%;
+      padding: 14px;
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 6px;
+      border-radius: 10px;
+      border: 1px solid #4db6ac;
+      background: #020807;
+      color: #ffffff;
+      margin-bottom: 15px;
+    }
+
+    .unlock-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #00897b, #00e676);
+      color: #000000;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .bio-btn {
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      color: #00e676;
+      font-weight: bold;
+      font-size: 15px;
+      border: 1px solid #00e676;
+      border-radius: 10px;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* MAIN APP */
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 6px;
+    }
+
+    .brand-title {
+      font-weight: bold;
+      font-size: 14px;
+      color: #80cbc4;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mode-btn {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #4db6ac;
+      color: #80cbc4;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .creator-card {
+      background: #081817;
+      border: 1px solid #26a69a;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .creator-card h3 {
+      color: #4db6ac;
+      margin-bottom: 12px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: #b2dfdb;
+      margin-bottom: 4px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #00695c;
+      background: #020807;
+      color: #ffffff;
+      font-size: 15px;
+    }
+
+    .activate-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #00897b, #00e676);
+      color: #000000;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    #captureArea {
+      background: radial-gradient(
+        circle at 50% 45%,
+        #165b59 0%,
+        #092b29 45%,
+        #030a09 100%
+      );
+      padding: 25px 18px;
+      border-radius: 16px;
+      border: 1px solid #1f4f4c;
+    }
+
+    .poster-header {
+      margin-bottom: 20px;
+    }
+
+    .poster-header h1 {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 800;
+      color: #e0f2f1;
+    }
+
+    .poster-subtitle {
+      font-size: 13px;
+      color: #b2dfdb;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #4db6ac;
+      display: inline-block;
+    }
+
+    .pill-row {
+      background: rgba(3, 8, 8, 0.92);
+      border: 1px solid rgba(77, 182, 172, 0.4);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: #e0f2f1;
+    }
+
+    .pill-icon {
+      font-size: 18px;
+      color: #4db6ac;
+    }
+
+    .pill-right {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .precautions {
+      margin-top: 15px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #b2dfdb;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .precautions strong {
+      display: block;
+      font-size: 12px;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .status-banner {
+      text-align: center;
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid #00e676;
+      color: #00e676;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 15px 0 10px 0;
+    }
+
+    .download-btn {
+      width: 100%;
+      padding: 15px;
+      background: #ffffff;
+      color: #030a09;
+      font-weight: 800;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 380px) {
+      .top-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .mode-btn {
+        flex: 1;
+      }
+
+      .pill-right {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SECURITY LOCK SCREEN -->
+
+  <div id="lockScreen">
+    <div class="lock-box">
+      <div class="lock-icon">🔒</div>
+
+      <h2 id="lockTitle">App Locked</h2>
+
+      <p id="lockSubtitle">
+        Enter your secret PIN or use fingerprint to unlock
+      </p>
+
+      <input
+        type="password"
+        id="pinField"
+        class="pin-input"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        maxlength="6"
+        placeholder="••••"
+        autocomplete="off"
+      >
+
+      <button
+        type="button"
+        class="unlock-btn"
+        id="pinSubmitBtn"
+        onclick="handlePinAction()"
+      >
+        Unlock App
+      </button>
+
+      <button
+        type="button"
+        class="bio-btn"
+        id="bioUnlockBtn"
+        onclick="unlockWithFingerprint()"
+      >
+        👆 Use Fingerprint
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION -->
+
+  <main class="container">
+    <div class="top-bar">
+      <div class="brand-title">SIGNAL DESK</div>
+
+      <div class="top-actions">
+        <button
+          type="button"
+          class="mode-btn"
+          onclick="setupFingerprint()"
+        >
+          👆 Set Fingerprint
+        </button>
+
+        <button
+          type="button"
+          class="mode-btn"
+          onclick="toggleCreator()"
+        >
+          Editor
+        </button>
+
+        <button
+          type="button"
+          class="mode-btn"
+          onclick="lockApp()"
+        >
+          🔒 Lock
+        </button>
+      </div>
+    </div>
+
+    <section class="creator-card" id="creatorPanel">
+      <h3>Create Signal Picture</h3>
+
+      <div class="input-group">
+        <label for="inExchange">Exchange / Broker Name</label>
+        <input
+          type="text"
+          id="inExchange"
+          value="DERIV"
+          autocomplete="organization"
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="inCurrency">Currency / Asset</label>
+        <input
+          type="text"
+          id="inCurrency"
+          value="EUR/USD"
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="inBuyTime">Buy Time, 24-hour clock</label>
+        <input
+          type="time"
+          id="inBuyTime"
+          value="19:33"
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="inSellTime">Selling Time, 24-hour clock</label>
+        <input
+          type="time"
+          id="inSellTime"
+          value="19:46"
+        >
+      </div>
+
+      <button
+        type="button"
+        class="activate-btn"
+        onclick="activateSignal()"
+      >
+        Update Card &amp; Arm Timer
+      </button>
+    </section>
+
+    <section id="captureArea">
+      <div class="poster-header">
+        <h1>
+          Personal<br>
+          Trading Instructions
+        </h1>
+
+        <div class="poster-subtitle">
+          Private Family Signal System
+        </div>
+      </div>
+
+      <div class="pill-row">
+        <div class="pill-left">
+          <span class="pill-icon">🏦</span>
+          <span>Exchange</span>
+        </div>
+
+        <div class="pill-right" id="outExchange">DERIV</div>
+      </div>
+
+      <div class="pill-row">
+        <div class="pill-left">
+          <span class="pill-icon">📅</span>
+          <span>Transaction date</span>
+        </div>
+
+        <div class="pill-right" id="outDate">--.--</div>
+      </div>
+
+      <div class="pill-row">
+        <div class="pill-left">
+          <span class="pill-icon">🪙</span>
+          <span>Currency</span>
+        </div>
+
+        <div class="pill-right" id="outCurrency">EUR/USD</div>
+      </div>
+
+      <div class="pill-row">
+        <div class="pill-left">
+          <span class="pill-icon">⏱️</span>
+          <span>Buy time</span>
+        </div>
+
+        <div class="pill-right" id="outBuyTime">19 : 33</div>
+      </div>
+
+      <div class="pill-row">
+        <div class="pill-left">
+          <span class="pill-icon">🔔</span>
+          <span>Selling time</span>
+        </div>
+
+        <div class="pill-right" id="outSellTime">19 : 46</div>
+      </div>
+
+      <div class="precautions">
+        <strong>Trading Reminders:</strong>
+
+        1. Only trade on regulated, licensed brokers where funds can be
+        withdrawn anytime.<br>
+
+        2. Always verify live market charts and set a Stop Loss before entering
+        any trade.<br>
+
+        3. Never risk money you cannot afford to lose.
+      </div>
+    </section>
+
+    <div
+      class="status-banner"
+      id="statusBanner"
+      role="status"
+      aria-live="polite"
+    >
+      Ready: Enter details above
+    </div>
+
+    <button
+      type="button"
+      class="download-btn"
+      onclick="downloadSignalImage()"
+    >
+      📥 Download Signal Picture
+    </button>
+  </main>
+
+  <!-- html2canvas converts the signal card into a downloadable image. -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- Your application logic. -->
+  <script src="app.js"></script>
+
+</body>
+</html>
